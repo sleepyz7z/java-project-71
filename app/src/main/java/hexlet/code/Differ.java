@@ -43,7 +43,6 @@ public class Differ {
                 result.append("  + ").append(key).append(": ").append(value).append("\n");
             }
         });
-
         return result.append("}").toString();
     }
 }
