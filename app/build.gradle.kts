@@ -20,6 +20,7 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter")
     implementation("info.picocli:picocli:4.7.7")
     annotationProcessor("info.picocli:picocli-codegen:4.7.7")
+    implementation("com.fasterxml.jackson.core:jackson-databind:2.13.4")
 }
 
 tasks.test {

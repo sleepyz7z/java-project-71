@@ -4,6 +4,7 @@ import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Parameters;
 import picocli.CommandLine.Option;
+import java.util.concurrent.Callable;
 
 @Command(
         name = "gendiff",
@@ -11,21 +12,20 @@ import picocli.CommandLine.Option;
         mixinStandardHelpOptions = true,
         version = "1.0"
 )
-
-public class App implements Runnable {
+public final class App implements Callable<Integer> {
     @Parameters(
             index = "0",
             description = "path to first file",
             paramLabel = "filepath1"
     )
-    private String filepath1;
+    private String filePath1;
 
     @Parameters(
             index = "1",
-            description = "path to secomd file",
+            description = "path to second file",
             paramLabel = "filepath2"
     )
-    private String filepath2;
+    private String filePath2;
 
     @Option(
             names = {"-f", "--format"},
@@ -36,16 +36,19 @@ public class App implements Runnable {
     private String format;
 
     public static void main(String[] args) {
-        new CommandLine(new App()).execute(args);
+        int exitCode = new CommandLine(new App()).execute(args);
+        System.exit(exitCode);
     }
 
     @Override
-    public void run() {
+    public Integer call() {
         try {
-            String diff = Differ.generate(filepath1, filepath2);
-            System.out.println(diff);
+            String formattedDiff = Differ.generate(filePath1, filePath2, format);
+            System.out.println(formattedDiff);
+            return 0; // Успех
         } catch (Exception e) {
-            System.err.println("Error comparing files: " + e.getMessage());
+            System.err.println("Error: " + e.getMessage());
+            return 1; // Ошибка
         }
     }
 }
