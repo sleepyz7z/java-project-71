@@ -20,6 +20,7 @@ kls_database.db
 .idea/jarRepositories.xml
 .idea/compiler.xml
 .idea/libraries/
+/idea
 .idea
 *.iws
 *.iml
@@ -39,6 +40,4 @@ out/
 .DS_Store
 *.DS_Store
 **/.DS_Store
-# JetBrains IDE
-.idea/
-*.iml
+
