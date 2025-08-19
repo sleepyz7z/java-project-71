@@ -7,6 +7,8 @@ build/
 build
 **/logs/
 
+demo.cast
+
 .settings
 bin
 .project*

@@ -6,6 +6,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Map;
+import java.util.TreeMap;
+import java.util.TreeSet;
+import java.util.Objects;
 
 public class Differ {
     public static String generate(String filePath1, String filePath2, String format) throws Exception {
@@ -26,23 +29,28 @@ public class Differ {
         if (!"stylish".equals(format)) {
             throw new UnsupportedOperationException("Unsupported format: " + format);
         }
-
         StringBuilder result = new StringBuilder("{\n");
+        TreeSet<String> allKeys = new TreeSet<>();
+        allKeys.addAll(map1.keySet());
+        allKeys.addAll(map2.keySet());
 
-        map1.forEach((key, value) -> {
-            if (!map1.containsKey(key)) {
-                result.append("  - ").append(key).append(": ").append(value).append("\n");
-            } else if (!value.equals(map2.get(key))) {
-                result.append("  - ").append(key).append(": ").append(value).append("\n");
-                result.append("  + ").append(key).append(": ").append(map2.get(key)).append("\n");
-            }
-        });
+        for (String key : allKeys) {
+            boolean inFirst = map1.containsKey(key);
+            boolean inSecond = map2.containsKey(key);
+            Object value1 = inFirst ? map1.get(key) : null;
+            Object value2 = inSecond ? map2.get(key) : null;
 
-        map2.forEach((key, value) -> {
-            if (!map2.containsKey(key)) {
-                result.append("  + ").append(key).append(": ").append(value).append("\n");
+            if (inFirst && inSecond && Objects.equals(value1, value2)) {
+                result.append("    ").append(key).append(": ").append(value1).append("\n");
+            } else {
+                if (inFirst) {
+                    result.append("  - ").append(key).append(": ").append(value1).append("\n");
+                }
+                if (inSecond) {
+                    result.append("  + ").append(key).append(": ").append(value2).append("\n");
+                }
             }
-        });
+        }
         return result.append("}").toString();
     }
 }
